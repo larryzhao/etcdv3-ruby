@@ -44,7 +44,11 @@ class Etcdv3
         :this_channel_is_insecure
       when 'https'
         # Use default certs for now.
-        GRPC::Core::ChannelCredentials.new
+        GRPC::Core::ChannelCredentials.new(
+          File.read(ENV["ETCD_ROOT_CA"]),
+          File.read(ENV["ETCD_CLIENT_KEY"]),
+          File.read(ENV["ETCD_CLIENT_CERT"])
+        )
       else
         raise "Unknown scheme: #{@endpoint.scheme}"
       end
